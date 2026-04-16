@@ -39,4 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Video modal will open here in the future!');
         });
     });
+
+    const contactBtn = document.querySelector('.nav-contact');
+    if (contactBtn) {
+        contactBtn.addEventListener('click', () => {
+            contactBtn.textContent = 'meow@rdkitty.com';
+            window.location.href = 'mailto:meow@rdkitty.com';
+        });
+    }
 });
