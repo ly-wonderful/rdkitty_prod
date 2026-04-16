@@ -43,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactBtn = document.querySelector('.nav-contact');
     if (contactBtn) {
         contactBtn.addEventListener('click', () => {
-            contactBtn.textContent = 'meow@rdkitty.com';
-            window.location.href = 'mailto:meow@rdkitty.com';
+            alert('meow@rdkitty.com');
         });
     }
 });
