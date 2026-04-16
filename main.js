@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reveal animations on scroll
     const revealElements = document.querySelectorAll('.reveal');
-    
+
     const revealCallback = (entries, observer) => {
         entries.forEach(entry => {
-            if(entry.isIntersecting) {
+            if (entry.isIntersecting) {
                 entry.target.classList.add('active');
                 observer.unobserve(entry.target);
             }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactBtn = document.querySelector('.nav-contact');
     if (contactBtn) {
         contactBtn.addEventListener('click', () => {
-            alert('meow@rdkitty.com');
+            alert('Please send email to meow@rdkitty.com for inquery.');
         });
     }
 });
