@@ -99,7 +99,17 @@
         </div>
     </section>
 
-
+    <!-- Adoption Grid -->
+    <section id="adoption" class="adoption section-padding" style="background-color: #faf9f6;">
+        <h2 class="section-title">Kitten Availability</h2>
+        <p class="section-subtitle">Find your perfect fluffy companion</p>
+        <div class="media-grid reveal fade-up" id="homeAdoptionGrid" style="max-width: 1200px; margin: 40px auto 0;">
+            <p style="text-align: center; width: 100%; grid-column: 1 / -1;">Loading available kittens...</p>
+        </div>
+        <div style="text-align: center; margin-top: 40px;" class="reveal fade-up">
+            <a href="gallery.html" class="btn btn-outline" style="padding: 10px 30px; font-size: 1rem; border-radius: 30px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; display: inline-block;">View Full Gallery</a>
+        </div>
+    </section>
 
     <section id="care" class="care section-padding">
         <h2 class="section-title">Care Cheatsheet</h2>
@@ -127,6 +137,51 @@
     <rdkitty-footer></rdkitty-footer>
 
     <script src="main.js"></script>
+
+    <!-- Home Adoption Fetch API -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.supabaseClient) return;
+            const adoptionGrid = document.getElementById('homeAdoptionGrid');
+            if (!adoptionGrid) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('media')
+                    .select('*')
+                    .neq('availability', '')
+                    .not('availability', 'is', null)
+                    .order('created_at', { ascending: false });
+
+                if (error || data.length === 0) {
+                    adoptionGrid.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1; color:var(--text-light);">Stay tuned! Litters are on the way.</p>';
+                    return;
+                }
+
+                let html = '';
+                data.forEach(item => {
+                    if (item.type !== 'photo') return;
+                    let badgeText = '';
+                    if (item.availability === 'available') badgeText = "Available for Adoption";
+                    else if (item.availability === 'ready') badgeText = "Ready to Go Home";
+                    else if (item.availability === 'unavailable') badgeText = "Not Available";
+
+                    html += `
+                    <div class="media-item">
+                        <img src="${item.url}" alt="Ragdoll Kitten" loading="lazy">
+                        <div class="status-badge ${item.availability}">${badgeText}</div>
+                    </div>
+                    `;
+                });
+                
+                adoptionGrid.innerHTML = html === '' ? '<p style="text-align:center; width:100%; grid-column: 1/-1; color:var(--text-light);">Stay tuned! Litters are on the way.</p>' : html;
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    </script>
 </body>
 
 </html>
