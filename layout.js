@@ -68,3 +68,12 @@ class RDKittyFooter extends HTMLElement {
     }
 }
 customElements.define('rdkitty-footer', RDKittyFooter);
+
+// --- Vercel Analytics Global Injection ---
+if (typeof window !== 'undefined' && !window.va) {
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    const vaScript = document.createElement('script');
+    vaScript.defer = true;
+    vaScript.src = '/_vercel/insights/script.js';
+    document.head.appendChild(vaScript);
+}
