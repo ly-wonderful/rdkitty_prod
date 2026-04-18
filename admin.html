@@ -6,6 +6,7 @@
     <title>Gallery Admin - RDKitty</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="layout.js"></script>
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
@@ -34,14 +35,7 @@
 </head>
 <body style="background-color: var(--primary-bg);">
 
-    <nav class="navbar scrolled">
-        <div class="logo">RDKitty Admin</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Back to Home</a></li>
-            <li><a href="gallery.html">View Gallery</a></li>
-        </ul>
-        <button id="logoutBtn" class="nav-contact hidden">Logout</button>
-    </nav>
+    <rdkitty-header></rdkitty-header>
 
     <div class="admin-container">
         <!-- Auth Section -->
@@ -149,6 +143,8 @@
             </div>
         </div>
     </div>
+
+    <rdkitty-footer></rdkitty-footer>
 
     <!-- Application Logic -->
     <script src="config.js"></script>

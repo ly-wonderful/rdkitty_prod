@@ -6,6 +6,7 @@
     <title>Gallery - RDKitty</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="layout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .gallery-container { padding: 120px 10%; min-height: 80vh; }
@@ -23,15 +24,7 @@
 </head>
 <body>
 
-    <nav class="navbar scrolled">
-        <div class="logo">RDKitty</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#royalty">The Royalty</a></li>
-            <li><a href="gallery.html" style="color:var(--gold);">Full Gallery</a></li>
-            <li><a href="products.html">Products</a></li>
-        </ul>
-    </nav>
+    <rdkitty-header></rdkitty-header>
 
     <div class="gallery-container">
         <h2 class="section-title">Our Cattery Moments</h2>
@@ -46,19 +39,7 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>RDKitty</h3>
-                <p>Breeding beautiful Ragdolls with love.</p>
-            </div>
-            <div class="footer-links">
-                <p>Contact: meow@rdkitty.com</p>
-                <p>&copy; 2026 RDKitty Cattery. All rights reserved.</p>
-                <a href="admin.html" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Admin Login</a>
-            </div>
-        </div>
-    </footer>
+    <rdkitty-footer></rdkitty-footer>
 
     <script src="config.js"></script>
     <script src="gallery.js"></script>

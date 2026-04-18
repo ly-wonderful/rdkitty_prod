@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recommended Products | RDKitty Cattery</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="layout.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         .products-page-header {
@@ -34,15 +35,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar scrolled">
-        <div class="logo">RDKitty</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="index.html#royalty">The Royalty</a></li>
-            <li><a href="gallery.html">Full Gallery</a></li>
-            <li><a href="products.html" style="color:var(--gold);">Products</a></li>
-        </ul>
-    </nav>
+    <rdkitty-header></rdkitty-header>
 
     <div class="products-page-header">
         <h1>Essential Kitty Supplies</h1>
@@ -83,19 +76,7 @@
         </div>
     </section>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>RDKitty</h3>
-                <p>Breeding beautiful Ragdolls with love.</p>
-            </div>
-            <div class="footer-links">
-                <p>Contact: meow@rdkitty.com</p>
-                <p>&copy; 2026 RDKitty Cattery. All rights reserved.</p>
-                <a href="admin.html" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Admin Login</a>
-            </div>
-        </div>
-    </footer>
+    <rdkitty-footer></rdkitty-footer>
 
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

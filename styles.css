@@ -450,6 +450,12 @@ footer {
     transform: translate(0, 0);
 }
 
+rdkitty-header, rdkitty-footer {
+    display: block;
+    width: 100%;
+    z-index: 1000;
+}
+
 .fade-up {
     transform: translateY(50px);
 }
