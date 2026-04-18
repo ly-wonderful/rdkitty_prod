@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Products | RDKitty Cattery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        .products-page-header {
+            text-align: center;
+            padding: 140px 20px 40px;
+            background: linear-gradient(135deg, rgba(251, 248, 241, 1) 0%, #fff 100%);
+        }
+        .products-page-header h1 {
+            font-size: 3rem;
+            color: var(--dark-blue);
+            margin-bottom: 1rem;
+        }
+        .products-page-header p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .full-product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            padding: 40px 10%;
+            max-width: 1400px;
+            margin: 0 auto 60px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="logo">RDKitty</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#royalty">The Royalty</a></li>
+            <li><a href="gallery.html">Full Gallery</a></li>
+            <li><a href="products.html" style="color:var(--gold);">Products</a></li>
+        </ul>
+    </nav>
+
+    <div class="products-page-header">
+        <h1>Essential Kitty Supplies</h1>
+        <p>Curated products to keep your Ragdoll happy, healthy, and looking flawless. We personally use and recommend every item here.</p>
+    </div>
+
+    <section class="care section-padding" style="padding-top: 20px;">
+        <div class="products-grid" style="max-width: 1400px; margin: 0 auto; padding: 0 5%;">
+            
+            <a href="https://amzn.to/3QnVRsv" target="_blank" rel="noopener noreferrer" class="product-card reveal fade-up">
+                <img src="assets/images/products/slide-litter-37lb.png" alt="ARM & HAMMER Clump & Seal Cat Litter" class="product-image">
+                <h4>SLIDE Platinum Multi-Cat Clumping Cat Litter</h4>
+                <p>Dust-free, flushable, and highly absorbent. The best choice for sensitive paws.</p>
+                <span class="shop-link">Shop Here &rarr;</span>
+            </a>
+
+            <a href="https://amzn.to/4dMkngN" target="_blank" rel="noopener noreferrer" class="product-card reveal fade-up">
+                <img src="assets/images/products/royal-baby-food.png" alt="Royal Canin Mother & Babycat" class="product-image">
+                <h4>Royal Canin Feline Health Nutrition Mother & Babycat Queen Dry Cat Food</h4>
+                <p>1-4 months kitten food.</p>
+                <span class="shop-link">Shop Here &rarr;</span>
+            </a>
+
+            <a href="https://amzn.to/3OLvTPf" target="_blank" rel="noopener noreferrer" class="product-card reveal fade-up">
+                <img src="assets/images/products/litter-box-xxxl.png" alt="FURTIME XXXL Litter Box" class="product-image">
+                <h4>FURTIME XXXL Extra Large Stainless Steel Litter Box</h4>
+                <p>Large Enclosed Cat Litter Box for Big Cats, Metal Cat Box with High Sided Enclosure & Scoop, Grey</p>
+                <span class="shop-link">Shop Here &rarr;</span>
+            </a>
+
+            <a href="https://amzn.to/3OINeZ5" target="_blank" rel="noopener noreferrer" class="product-card reveal fade-up">
+                <img src="assets/images/products/royal-adult-dry-food.png" alt="Royal Canin Ragdoll Adult" class="product-image">
+                <h4>Royal Canin Feline Breed Nutrition Ragdoll Adult Dry Cat Food, 7 lb Bag</h4>
+                <p>Nutritionally balanced for Adult Ragdolls.</p>
+                <span class="shop-link">Shop Here &rarr;</span>
+            </a>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>RDKitty</h3>
+                <p>Breeding beautiful Ragdolls with love.</p>
+            </div>
+            <div class="footer-links">
+                <p>Contact: meow@rdkitty.com</p>
+                <p>&copy; 2026 RDKitty Cattery. All rights reserved.</p>
+                <a href="admin.html" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Admin Login</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.supabase) return;
+            
+            const grid = document.querySelector('.products-grid');
+            if (!grid) return;
+            
+            try {
+                const { data: products, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error("Products table not initialized or error:", error);
+                    return;
+                }
+
+                if (products && products.length > 0) {
+                    let html = '';
+                    products.forEach(prod => {
+                        html += `
+                        <a href="${prod.amazon_link}" target="_blank" rel="noopener noreferrer" class="product-card">
+                            <img src="${prod.image_url}" alt="${prod.title}" class="product-image">
+                            <h4>${prod.title}</h4>
+                            <p>${prod.description || ''}</p>
+                            <span class="shop-link">Shop Here &rarr;</span>
+                        </a>
+                        `;
+                    });
+                    
+                    // Prepend newly managed admin products above the hardcoded ones
+                    grid.insertAdjacentHTML('afterbegin', html);
+                }
+            } catch (err) {
+                console.error("Warning:", err.message);
+            }
+        });
+    </script>
+</body>
+</html>

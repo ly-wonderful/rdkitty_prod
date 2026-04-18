@@ -114,6 +114,39 @@
                     <!-- Folders loaded here -->
                 </div>
             </div>
+
+            <!-- Manage Products -->
+            <div class="dashboard-section" id="manageProductsSection">
+                <h3>5. Manage Products</h3>
+                <p style="font-size: 0.9em; margin-bottom: 15px; color: var(--text-light);">Paste an Amazon link below to automatically grab the title, description, and image!</p>
+                
+                <div class="form-group" style="display:flex; gap:10px;">
+                    <input type="text" id="prodLink" placeholder="Amazon Link (e.g. https://amzn.to/...)" style="flex-grow:1;">
+                    <button class="btn btn-outline" id="autoFetchBtn" style="border-radius:5px; cursor:pointer;">Auto-Fetch</button>
+                </div>
+
+                <div class="form-group" style="margin-top:10px;">
+                    <input type="text" id="prodTitle" placeholder="Product Title">
+                </div>
+                <div class="form-group">
+                    <textarea id="prodDesc" placeholder="Product Description..." rows="3" style="width:100%; max-width: 100%; padding:10px; border:1px solid #ddd; border-radius:5px; resize:vertical; font-family:inherit;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Product Image Override (Optional):</label>
+                    <input type="file" id="prodImageInput" accept="image/*">
+                    <input type="hidden" id="prodImageUrlHidden">
+                    <div id="prodImagePreviewContainer" style="display:none; margin-top:10px;">
+                        <img id="prodImagePreview" src="" style="max-height:100px; border-radius:5px; border:1px solid #eee;">
+                        <br><span style="font-size:0.8rem; color:#888;">Auto-fetched image preview</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="addProductBtn">Publish Product</button>
+
+                <div id="adminProductList" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                    <!-- Product items loaded here -->
+                </div>
+            </div>
         </div>
     </div>
 

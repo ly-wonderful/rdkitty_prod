@@ -45,3 +45,20 @@ CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = '
 CREATE POLICY "Auth Upload" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'gallery_images');
 CREATE POLICY "Auth Update" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'gallery_images');
 CREATE POLICY "Auth Delete" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'gallery_images');
+
+-- 7. Create Products table
+CREATE TABLE public.products (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    amazon_link TEXT NOT NULL,
+    image_url TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS and create Policies for Products
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable read access for all users" ON public.products FOR SELECT USING (true);
+CREATE POLICY "Enable insert for authenticated users only" ON public.products FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Enable update for authenticated users only" ON public.products FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "Enable delete for authenticated users only" ON public.products FOR DELETE TO authenticated USING (true);

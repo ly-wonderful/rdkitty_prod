@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         dashboardSection.classList.remove('hidden');
         logoutBtn.classList.remove('hidden');
         await loadFolders();
+        if (typeof loadAdminProducts === 'function') await loadAdminProducts();
     }
 
     async function loadFolders() {
@@ -348,4 +349,241 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('youtubeInput').value = '';
         loadAdminMedia();
     });
+
+    // ==========================================
+    // MANAGE PRODUCTS
+    // ==========================================
+    window.loadAdminProducts = async () => {
+        const listContainer = document.getElementById('adminProductList');
+        if (!listContainer) return;
+        
+        listContainer.innerHTML = 'Loading...';
+        const { data, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+        if (error) {
+            listContainer.innerHTML = 'Error loading products: ' + error.message;
+            return;
+        }
+
+        listContainer.innerHTML = '';
+        data.forEach(prod => {
+            const div = document.createElement('div');
+            div.className = 'admin-media-item';
+            div.draggable = true;
+            div.dataset.id = prod.id;
+            
+            let html = `<img src="${prod.image_url}" alt="product image" style="border-radius:5px; object-fit:contain; max-width:60px; max-height:60px;">`;
+            html += `<span class="media-info" style="font-size:0.85rem"><b>${prod.title}</b><br/><a href="${prod.amazon_link}" target="_blank" style="color:var(--dark-blue);">Link</a></span>
+                     <span style="flex-grow:1; text-align:right; margin-right:15px; color:#aaa;">☰</span>
+                     <button class="btn-danger btn-sm product-del-btn" data-id="${prod.id}" data-url="${prod.image_url}">Delete</button>`;
+            
+            div.innerHTML = html;
+            
+            div.addEventListener('dragstart', () => div.classList.add('dragging'));
+            div.addEventListener('dragend', () => {
+                div.classList.remove('dragging');
+                saveProductOrder();
+            });
+
+            listContainer.appendChild(div);
+        });
+
+        listContainer.querySelectorAll('.product-del-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                if (!confirm('Are you sure you want to delete this product?')) return;
+                const id = e.target.getAttribute('data-id');
+                const url = e.target.getAttribute('data-url');
+                e.target.innerText = 'Deleting...';
+                
+                // Delete image from storage
+                const filePath = url.split('gallery_images/')[1];
+                if (filePath) await supabaseClient.storage.from('gallery_images').remove([filePath]);
+                
+                // Delete from DB
+                await supabaseClient.from('products').delete().eq('id', id);
+                loadAdminProducts();
+            });
+        });
+    };
+
+    async function saveProductOrder() {
+        const items = document.querySelectorAll('#adminProductList .admin-media-item');
+        let time = Date.now();
+        const updates = [];
+        items.forEach((item, index) => {
+            const newDate = new Date(time - index * 1000).toISOString();
+            updates.push({ id: item.dataset.id, created_at: newDate });
+        });
+        for (let up of updates) {
+            await supabaseClient.from('products').update({ created_at: up.created_at }).eq('id', up.id);
+        }
+    }
+
+    const adminProductListDOM = document.getElementById('adminProductList');
+    if (adminProductListDOM) {
+        adminProductListDOM.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(adminProductListDOM, e.clientY, '.admin-media-item');
+            const draggable = document.querySelector('.dragging');
+            if (draggable && afterElement == null) {
+                adminProductListDOM.appendChild(draggable);
+            } else if (draggable) {
+                adminProductListDOM.insertBefore(draggable, afterElement);
+            }
+        });
+    }
+
+    const autoFetchBtn = document.getElementById('autoFetchBtn');
+    if (autoFetchBtn) {
+        autoFetchBtn.addEventListener('click', async () => {
+            const link = document.getElementById('prodLink').value;
+            if (!link || !link.startsWith('http')) return alert('Please enter a valid URL.');
+            
+            autoFetchBtn.innerText = 'Fetching...';
+            autoFetchBtn.disabled = true;
+
+            try {
+                // Use Microlink API to bypass cross-origin restrictions gracefully
+                const response = await fetch(`https://api.microlink.io?url=${encodeURIComponent(link)}`);
+                const json = await response.json();
+                
+                if (json.status === 'success' && json.data) {
+                    const data = json.data;
+
+                    let title = data.title || "";
+                    let desc = data.description || "";
+
+                    // Amazon Anti-Scrape Sanitization
+                    if (title.toUpperCase().includes("AMAZON.COM")) {
+                        title = title.replace(/^Amazon\.com\s*:\s*/i, '').split(' : ')[0];
+                    }
+                    if (desc.toUpperCase().includes("AMAZON.COM")) {
+                        desc = desc.replace(/^Amazon\.com\s*:\s*/i, '').split(' : ')[0];
+                    }
+                    
+                    if (title) document.getElementById('prodTitle').value = title;
+                    if (desc) document.getElementById('prodDesc').value = desc;
+
+                    const imgUrl = (data.image && data.image.url) ? data.image.url : "";
+                    
+                    // Amazon forces proxy bots to grab the Prime Logo instead of actual product images
+                    const isAmazonGeneric = imgUrl.includes("Prime_Logo") || imgUrl.includes("favicon");
+
+                    if (imgUrl && !isAmazonGeneric) {
+                        document.getElementById('prodImageUrlHidden').value = imgUrl;
+                        const preview = document.getElementById('prodImagePreview');
+                        preview.src = imgUrl;
+                        document.getElementById('prodImagePreviewContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('prodImageUrlHidden').value = '';
+                        document.getElementById('prodImagePreviewContainer').style.display = 'none';
+                        alert("Text data fetched successfully!\n\nNote: Amazon's security blocked the product image. Please right-click the Amazon picture, save it, and upload it manually using the 'Product Image Override' button below.");
+                    }
+                } else {
+                    alert('Could not automatically parse data. Attempt manually.');
+                }
+            } catch (err) {
+                alert('Fetch failed: ' + err.message);
+            }
+
+            autoFetchBtn.innerText = 'Auto-Fetch';
+            autoFetchBtn.disabled = false;
+        });
+    }
+
+    const addProductBtn = document.getElementById('addProductBtn');
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', async () => {
+            const title = document.getElementById('prodTitle').value;
+            const desc = document.getElementById('prodDesc').value;
+            const link = document.getElementById('prodLink').value;
+            const fileInput = document.getElementById('prodImageInput');
+            const file = fileInput.files ? fileInput.files[0] : null;
+            const fetchedImageUrl = document.getElementById('prodImageUrlHidden').value;
+
+            if (!title || !link) return alert('Title and Amazon Link are strongly required!');
+            if (!file && !fetchedImageUrl) return alert('Please Auto-Fetch or manually upload a Product Image!');
+            
+            addProductBtn.innerText = 'Publishing...';
+            addProductBtn.disabled = true;
+
+            const uploadToSupabase = async (blob) => {
+                const fileName = `prod_${Math.random()}.png`;
+                const filePath = `products/${fileName}`;
+                const { error: upErr } = await supabaseClient.storage.from('gallery_images').upload(filePath, blob, { contentType: 'image/png' });
+                if (upErr) throw new Error(upErr.message);
+                
+                const { data: { publicUrl } } = supabaseClient.storage.from('gallery_images').getPublicUrl(filePath);
+                
+                const { error: dbErr } = await supabaseClient.from('products').insert([{
+                    title: title,
+                    description: desc,
+                    amazon_link: link,
+                    image_url: publicUrl
+                }]);
+                if (dbErr) throw new Error(dbErr.message);
+            };
+
+            const processProductImage = (f) => {
+                return new Promise((resolve, reject) => {
+                    if (f.type === 'image/png') return uploadToSupabase(f).then(resolve).catch(reject);
+                    if (f.name.toLowerCase().endsWith('.heic') || f.type === 'image/heic') {
+                        if (typeof heic2any === 'undefined') return reject(new Error('heic2any missing'));
+                        heic2any({ blob: f, toType: 'image/png' })
+                            .then(conv => uploadToSupabase(Array.isArray(conv) ? conv[0] : conv))
+                            .then(resolve)
+                            .catch(err => reject(new Error('HEIC Convert: ' + err.message)));
+                    } else {
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            const img = new Image();
+                            img.onload = () => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0);
+                                canvas.toBlob(b => {
+                                    if (!b) return reject(new Error('Canvas error'));
+                                    uploadToSupabase(b).then(resolve).catch(reject);
+                                }, 'image/png');
+                            };
+                            img.onerror = () => reject(new Error('Invalid image.'));
+                            img.src = e.target.result;
+                        };
+                        reader.onerror = () => reject(new Error('FileReader Error.'));
+                        reader.readAsDataURL(f);
+                    }
+                });
+            };
+
+            try {
+                if (file) {
+                    await processProductImage(file);
+                } else {
+                    // Uses external URL natively without pushing image Blobs blindly 
+                    const { error: dbErr } = await supabaseClient.from('products').insert([{
+                        title: title,
+                        description: desc,
+                        amazon_link: link,
+                        image_url: fetchedImageUrl
+                    }]);
+                    if (dbErr) throw new Error(dbErr.message);
+                }
+
+                alert('Product successfully published to the public page!');
+                document.getElementById('prodTitle').value = '';
+                document.getElementById('prodDesc').value = '';
+                document.getElementById('prodLink').value = '';
+                document.getElementById('prodImageUrlHidden').value = '';
+                document.getElementById('prodImagePreviewContainer').style.display = 'none';
+                if (fileInput) fileInput.value = '';
+                loadAdminProducts();
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+            
+            addProductBtn.innerText = 'Publish Product';
+            addProductBtn.disabled = false;
+        });
+    }
 });
