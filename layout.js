@@ -13,7 +13,12 @@ class RDKittyHeader extends HTMLElement {
                 <li><a href="products.html">Products</a></li>
                 <li><a href="index.html#care">Care Guide</a></li>
             </ul>
-            <button class="nav-contact${isAdmin ? ' hidden' : ''}" ${isAdmin ? 'id="logoutBtn"' : ''}>${isAdmin ? 'Logout' : 'Contact Us'}</button>
+            <div class="nav-right" style="display:flex; align-items:center; gap:15px;">
+                <button class="nav-contact${isAdmin ? ' hidden' : ''}" ${isAdmin ? 'id="logoutBtn"' : ''}>${isAdmin ? 'Logout' : 'Contact Us'}</button>
+                <div class="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
         </nav>
         `;
 
@@ -21,6 +26,22 @@ class RDKittyHeader extends HTMLElement {
         if (contactBtn && !isAdmin) {
             contactBtn.addEventListener('click', () => {
                 window.location.href = 'mailto:meow@rdkitty.com';
+            });
+        }
+
+        const hamburger = this.querySelector('.hamburger');
+        const navLinks = this.querySelector('.nav-links');
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('active');
+                });
             });
         }
     }

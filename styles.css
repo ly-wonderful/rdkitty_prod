@@ -468,6 +468,34 @@ rdkitty-header, rdkitty-footer {
     transform: translateX(50px);
 }
 
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 28px;
+    height: 3px;
+    background-color: var(--dark-blue);
+    border-radius: 3px;
+    transition: var(--transition);
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
 @media (max-width: 900px) {
     .hero-content h1 {
         font-size: 3rem;
@@ -481,8 +509,28 @@ rdkitty-header, rdkitty-footer {
         grid-column: span 1;
     }
 
+    .hamburger {
+        display: flex;
+    }
+
     .nav-links {
-        display: none;
+        position: fixed;
+        right: -100%;
+        top: 0;
+        height: 100vh;
+        width: 70%;
+        max-width: 300px;
+        background: rgba(252, 251, 249, 0.98);
+        flex-direction: column;
+        padding-top: 100px;
+        padding-left: 30px;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        transition: right 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .nav-links.active {
+        right: 0;
     }
 
     .footer-content {
