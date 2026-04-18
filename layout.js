@@ -58,6 +58,7 @@ class RDKittyFooter extends HTMLElement {
                     <p>Breeding beautiful Ragdolls with love.</p>
                 </div>
                 <div class="footer-links">
+                    <p>Location: Windsong Ranch, Prosper, TX 75078</p>
                     <p>Contact: meow@rdkitty.com</p>
                     <p>&copy; 2026 RDKitty Cattery. All rights reserved.</p>
                     <a href="admin.html" style="color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.8rem; margin-top: 15px; display: inline-block;">Admin Login</a>
