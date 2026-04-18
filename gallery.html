@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - RDKitty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .gallery-container { padding: 120px 10%; min-height: 80vh; }
+        .folder-nav { text-align: center; margin-bottom: 3rem; }
+        .folder-btn { background: transparent; border: 1px solid var(--gold); padding: 0.5rem 1.5rem; margin: 0.5rem; border-radius: 30px; cursor: pointer; transition: 0.3s; font-family: var(--font-body); }
+        .folder-btn.active, .folder-btn:hover { background: var(--gold); color: white; }
+        
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .media-item { border-radius: 15px; overflow: hidden; position: relative; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .media-item img { width: 100%; height: 300px; object-fit: cover; display: block; }
+        .media-item iframe { width: 100%; height: 300px; border: none; }
+        
+        .empty-msg { text-align: center; width: 100%; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar scrolled">
+        <div class="logo">RDKitty</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#royalty">The Royalty</a></li>
+            <li><a href="gallery.html" style="color:var(--gold);">Full Gallery</a></li>
+        </ul>
+        <a href="admin.html" class="nav-contact" style="text-decoration:none;">Admin Login</a>
+    </nav>
+
+    <div class="gallery-container">
+        <h2 class="section-title">Our Cattery Moments</h2>
+        
+        <div class="folder-nav" id="folderNav">
+            <!-- Folder buttons will be injected here -->
+            <span>Loading collections...</span>
+        </div>
+
+        <div class="media-grid" id="mediaGrid">
+            <!-- Images and videos will be injected here -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>RDKitty</h3>
+                <p>Breeding beautiful Ragdolls with love.</p>
+            </div>
+            <div class="footer-links">
+                <p>Contact: meow@rdkitty.com</p>
+                <p>&copy; 2026 RDKitty Cattery. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="gallery.js"></script>
+</body>
+</html>
