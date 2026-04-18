@@ -94,6 +94,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 wrapper.appendChild(iframe);
             }
 
+            if (item.availability && item.availability !== '') {
+                const badge = document.createElement('div');
+                badge.className = `status-badge ${item.availability}`;
+                if (item.availability === 'available') badge.textContent = "Available for Adoption";
+                else if (item.availability === 'ready') badge.textContent = "Ready to Go Home";
+                else if (item.availability === 'unavailable') badge.textContent = "Not Available";
+                wrapper.appendChild(badge);
+            }
+
             mediaGrid.appendChild(wrapper);
         });
     }

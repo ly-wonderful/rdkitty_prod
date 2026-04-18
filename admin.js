@@ -185,10 +185,33 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             let html = item.type === 'photo' ? `<img src="${item.url}" alt="photo">` : `<span>🎥 YouTube</span>`;
             html += `<span class="media-info" style="font-size:0.8rem">${item.url}</span>
-                     <span style="flex-grow:1; text-align:right; margin-right:15px; color:#aaa;">☰</span>
+                     <span style="flex-grow:1; text-align:right; margin-right:5px; color:#aaa;">☰</span>
+                     <select class="status-select btn-sm" data-id="${item.id}" style="margin-right:10px; border-radius:5px; border:1px solid #ccc; padding:2px;">
+                         <option value="" ${!item.availability ? 'selected' : ''}>No Status Badge</option>
+                         <option value="available" ${item.availability === 'available' ? 'selected' : ''}>Available</option>
+                         <option value="ready" ${item.availability === 'ready' ? 'selected' : ''}>Ready to Go</option>
+                         <option value="unavailable" ${item.availability === 'unavailable' ? 'selected' : ''}>Not Available</option>
+                     </select>
                      <button class="btn-danger" data-id="${item.id}" data-url="${item.url}" data-type="${item.type}">Delete</button>`;
             
             div.innerHTML = html;
+
+            const selectEl = div.querySelector('.status-select');
+            selectEl.addEventListener('change', async (e) => {
+                 const newStatus = e.target.value;
+                 const itemId = e.target.getAttribute('data-id');
+                 const originalBg = e.target.style.backgroundColor;
+                 
+                 const { error } = await supabaseClient.from('media').update({ availability: newStatus }).eq('id', itemId);
+                 if (error) {
+                     alert("Action Failed!\n\nYou must open your Supabase SQL Editor and run:\nALTER TABLE media ADD COLUMN availability TEXT DEFAULT '';\n\nError: " + error.message);
+                     e.target.value = item.availability || '';
+                 } else {
+                     e.target.style.backgroundColor = '#d4edda';
+                     item.availability = newStatus;
+                     setTimeout(() => e.target.style.backgroundColor = originalBg, 1000);
+                 }
+            });
 
             div.addEventListener('dragstart', () => div.classList.add('dragging'));
             div.addEventListener('dragend', () => {
