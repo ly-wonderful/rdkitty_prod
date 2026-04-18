@@ -15,12 +15,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderQuery = urlParams.get('folder');
+
         folderNav.innerHTML = ''; // clear loading text
         folders.forEach((folder, index) => {
             const btn = document.createElement('button');
             btn.className = 'folder-btn';
             btn.textContent = folder.name;
-            if (index === 0) {
+            
+            let isActive = false;
+            if (folderQuery && folder.name.toLowerCase().includes(folderQuery.toLowerCase())) {
+                isActive = true;
+            } else if (!folderQuery && index === 0) {
+                isActive = true;
+            }
+
+            if (isActive && !activeFolderId) {
                 btn.classList.add('active');
                 activeFolderId = folder.id;
             }
@@ -34,6 +45,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             folderNav.appendChild(btn);
         });
+
+        if (!activeFolderId && folders.length > 0) {
+            activeFolderId = folders[0].id;
+            folderNav.firstChild.classList.add('active');
+        }
 
         if (activeFolderId) {
             loadMedia();
