@@ -164,9 +164,9 @@
                 data.forEach(item => {
                     if (item.type !== 'photo') return;
                     let badgeText = '';
-                    if (item.availability === 'available') badgeText = "Available for Adoption";
+                    if (item.availability === 'available') badgeText = "Available";
                     else if (item.availability === 'ready') badgeText = "Ready to Go Home";
-                    else if (item.availability === 'unavailable') badgeText = "Not Available";
+                    else if (item.availability === 'unavailable') badgeText = "Reserved";
 
                     html += `
                     <div class="media-item">

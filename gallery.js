@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (item.availability && item.availability !== '') {
                 const badge = document.createElement('div');
                 badge.className = `status-badge ${item.availability}`;
-                if (item.availability === 'available') badge.textContent = "Available for Adoption";
+                if (item.availability === 'available') badge.textContent = "Available";
                 else if (item.availability === 'ready') badge.textContent = "Ready to Go Home";
-                else if (item.availability === 'unavailable') badge.textContent = "Not Available";
+                else if (item.availability === 'unavailable') badge.textContent = "Reserved";
                 wrapper.appendChild(badge);
             }
 

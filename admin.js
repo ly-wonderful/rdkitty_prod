@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                          <option value="" ${!item.availability ? 'selected' : ''}>No Status Badge</option>
                          <option value="available" ${item.availability === 'available' ? 'selected' : ''}>Available</option>
                          <option value="ready" ${item.availability === 'ready' ? 'selected' : ''}>Ready to Go</option>
-                         <option value="unavailable" ${item.availability === 'unavailable' ? 'selected' : ''}>Not Available</option>
+                         <option value="unavailable" ${item.availability === 'unavailable' ? 'selected' : ''}>Reserved</option>
                      </select>
                      <button class="btn-danger" data-id="${item.id}" data-url="${item.url}" data-type="${item.type}">Delete</button>`;
             
