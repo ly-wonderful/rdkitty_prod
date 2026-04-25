@@ -78,3 +78,12 @@ if (typeof window !== 'undefined' && !window.va) {
     vaScript.src = '/_vercel/insights/script.js';
     document.head.appendChild(vaScript);
 }
+
+// --- Vercel Speed Insights Global Injection ---
+if (typeof window !== 'undefined' && !window.si) {
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    const siScript = document.createElement('script');
+    siScript.defer = true;
+    siScript.src = '/_vercel/speed-insights/script.js';
+    document.head.appendChild(siScript);
+}
